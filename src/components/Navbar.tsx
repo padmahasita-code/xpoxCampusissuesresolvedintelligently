@@ -16,18 +16,19 @@ const NAV_ITEMS: { id: Page; label: string; icon: typeof Home }[] = [
 
 export function Navbar({ current, onNavigate }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 border-b border-cyan-100/60 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <button
           onClick={() => onNavigate('home')}
-          className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+          className="group flex items-center gap-2.5 transition-opacity hover:opacity-90"
         >
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/20">
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/30 transition-transform group-hover:scale-105">
             <Bot className="h-5 w-5" />
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 opacity-0 blur-md transition-opacity group-hover:opacity-50" />
           </div>
           <div className="text-left">
-            <div className="text-base font-bold leading-tight text-slate-900">CampusCare AI</div>
-            <div className="text-[10px] font-medium uppercase tracking-wider text-slate-400">Report. Analyze. Resolve.</div>
+            <div className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-base font-bold leading-tight text-transparent">CampusCare AI</div>
+            <div className="bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-[10px] font-semibold uppercase tracking-wider text-transparent">Report. Analyze. Resolve.</div>
           </div>
         </button>
 
@@ -40,14 +41,17 @@ export function Navbar({ current, onNavigate }: NavbarProps) {
                 key={item.id}
                 onClick={() => onNavigate(item.id)}
                 className={cn(
-                  'flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  'relative flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200',
                   active
-                    ? 'bg-cyan-50 text-cyan-700'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+                    ? 'text-blue-700'
+                    : 'text-slate-600 hover:text-slate-900',
                 )}
               >
-                <Icon className="h-4 w-4" />
-                <span className="hidden sm:inline">{item.label}</span>
+                {active && (
+                  <span className="absolute inset-0 rounded-xl bg-gradient-to-br from-cyan-100 to-blue-100 shadow-sm" />
+                )}
+                <Icon className={cn('relative h-4 w-4 transition-transform', active && 'scale-110')} />
+                <span className="relative hidden sm:inline">{item.label}</span>
               </button>
             );
           })}

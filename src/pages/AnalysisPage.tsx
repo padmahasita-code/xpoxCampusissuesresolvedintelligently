@@ -20,12 +20,21 @@ const AGENT_ICONS: Record<string, typeof ScanText> = {
 };
 
 const AGENT_COLORS: Record<string, string> = {
-  analysis: 'text-cyan-600 bg-cyan-50 border-cyan-200',
-  priority: 'text-amber-600 bg-amber-50 border-amber-200',
-  routing: 'text-blue-600 bg-blue-50 border-blue-200',
-  action: 'text-violet-600 bg-violet-50 border-violet-200',
-  followup: 'text-rose-600 bg-rose-50 border-rose-200',
-  summary: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+  analysis: 'text-cyan-600 bg-gradient-to-br from-cyan-100 to-blue-100 border-cyan-200',
+  priority: 'text-amber-600 bg-gradient-to-br from-amber-100 to-yellow-100 border-amber-200',
+  routing: 'text-blue-600 bg-gradient-to-br from-blue-100 to-indigo-100 border-blue-200',
+  action: 'text-violet-600 bg-gradient-to-br from-violet-100 to-purple-100 border-violet-200',
+  followup: 'text-rose-600 bg-gradient-to-br from-rose-100 to-pink-100 border-rose-200',
+  summary: 'text-emerald-600 bg-gradient-to-br from-emerald-100 to-green-100 border-emerald-200',
+};
+
+const AGENT_DONE_BG: Record<string, string> = {
+  analysis: 'from-cyan-50/60 to-blue-50/40',
+  priority: 'from-amber-50/60 to-yellow-50/40',
+  routing: 'from-blue-50/60 to-indigo-50/40',
+  action: 'from-violet-50/60 to-purple-50/40',
+  followup: 'from-rose-50/60 to-pink-50/40',
+  summary: 'from-emerald-50/60 to-green-50/40',
 };
 
 const DEFAULT_STEPS = [
@@ -40,7 +49,6 @@ const DEFAULT_STEPS = [
 export function AnalysisPage({ onComplete, agentSteps, isRunning, complaintDescription }: AnalysisPageProps) {
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Simulate progressive agent activation while running
   useEffect(() => {
     if (!isRunning) return;
     if (currentStep >= DEFAULT_STEPS.length) {
@@ -68,10 +76,30 @@ export function AnalysisPage({ onComplete, agentSteps, isRunning, complaintDescr
   const progress = Math.round((completedCount / steps.length) * 100);
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8 text-center">
-        <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-lg shadow-cyan-500/25">
-          {isRunning ? <Loader2 className="h-8 w-8 animate-spin" /> : <CheckCircle2 className="h-8 w-8" />}
+    <div className="relative mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+        <div className={cn(
+          "absolute left-1/2 top-20 h-64 w-64 -translate-x-1/2 rounded-full blur-3xl transition-colors duration-1000",
+          isRunning ? "bg-gradient-to-br from-cyan-300/20 to-blue-400/15" : "bg-gradient-to-br from-emerald-300/20 to-green-400/15"
+        )} />
+      </div>
+
+      <div className="mb-8 text-center animate-fade-in">
+        <div className={cn(
+          "relative mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl text-white shadow-xl transition-all duration-500",
+          isRunning
+            ? "bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600 shadow-blue-500/30"
+            : "bg-gradient-to-br from-emerald-500 to-green-600 shadow-emerald-500/30"
+        )}>
+          {isRunning ? (
+            <>
+              <div className="absolute inset-0 animate-ping rounded-2xl bg-cyan-400/40" />
+              <Loader2 className="relative h-8 w-8 animate-spin" />
+            </>
+          ) : (
+            <CheckCircle2 className="h-8 w-8" />
+          )}
         </div>
         <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">
           {isRunning ? 'AI Agents Processing' : 'Analysis Complete'}
@@ -87,11 +115,11 @@ export function AnalysisPage({ onComplete, agentSteps, isRunning, complaintDescr
       <div className="mb-8">
         <div className="mb-2 flex items-center justify-between text-sm">
           <span className="font-medium text-slate-600">Agent Progress</span>
-          <span className="font-bold text-cyan-600">{progress}%</span>
+          <span className="font-bold text-blue-600">{progress}%</span>
         </div>
-        <div className="h-2.5 overflow-hidden rounded-full bg-slate-200">
+        <div className="h-3 overflow-hidden rounded-full bg-slate-200/70 shadow-inner">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 transition-all duration-500 ease-out"
+            className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 transition-all duration-500 ease-out shadow-lg shadow-blue-500/30"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -99,9 +127,9 @@ export function AnalysisPage({ onComplete, agentSteps, isRunning, complaintDescr
 
       {/* Complaint preview */}
       {complaintDescription && (
-        <div className="mb-8 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-          <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Complaint</p>
-          <p className="mt-1 text-sm text-slate-700">"{complaintDescription}"</p>
+        <div className="mb-8 overflow-hidden rounded-xl border border-cyan-200/60 bg-gradient-to-br from-cyan-50 to-blue-50 px-4 py-3 shadow-sm">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-cyan-600">Complaint</p>
+          <p className="mt-1 text-sm font-medium text-slate-700">"{complaintDescription}"</p>
         </div>
       )}
 
@@ -109,7 +137,8 @@ export function AnalysisPage({ onComplete, agentSteps, isRunning, complaintDescr
       <div className="space-y-3">
         {steps.map((step, i) => {
           const Icon = AGENT_ICONS[step.agent_name] || ScanText;
-          const colorClass = AGENT_COLORS[step.agent_name] || 'text-slate-600 bg-slate-50';
+          const colorClass = AGENT_COLORS[step.agent_name] || 'text-slate-600 bg-slate-100 border-slate-200';
+          const doneBg = AGENT_DONE_BG[step.agent_name] || 'from-slate-50/60 to-slate-50/40';
           const isCompleted = step.status === 'Completed';
           const isProcessing = step.status === 'Processing';
           const isWaiting = step.status === 'Waiting';
@@ -118,20 +147,24 @@ export function AnalysisPage({ onComplete, agentSteps, isRunning, complaintDescr
             <div
               key={step.id || i}
               className={cn(
-                'flex items-start gap-4 rounded-2xl border p-4 transition-all duration-300',
-                isCompleted && 'border-slate-200 bg-white shadow-sm',
-                isProcessing && 'border-cyan-200 bg-cyan-50/50 shadow-md shadow-cyan-500/10',
-                isWaiting && 'border-slate-200 bg-slate-50/50',
+                'flex items-start gap-4 rounded-2xl border p-4 transition-all duration-300 animate-slide-up',
+                isCompleted && cn('border-slate-200/80 bg-gradient-to-br shadow-sm', doneBg),
+                isProcessing && 'border-blue-300/80 bg-gradient-to-br from-blue-50/80 to-cyan-50/60 shadow-lg shadow-blue-500/10',
+                isWaiting && 'border-slate-200/60 bg-slate-50/40',
               )}
+              style={{ animationDelay: `${i * 60}ms` }}
             >
               {/* Icon / status circle */}
-              <div className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border', colorClass)}>
+              <div className={cn('flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border shadow-sm', colorClass)}>
                 {isCompleted ? (
                   <CheckCircle2 className="h-5 w-5" />
                 ) : isProcessing ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <>
+                    <div className="absolute h-10 w-10 animate-ping rounded-xl bg-blue-400/30" />
+                    <Loader2 className="relative h-5 w-5 animate-spin" />
+                  </>
                 ) : (
-                  <Icon className="h-5 w-5 opacity-50" />
+                  <Icon className="h-5 w-5 opacity-40" />
                 )}
               </div>
 
@@ -143,10 +176,10 @@ export function AnalysisPage({ onComplete, agentSteps, isRunning, complaintDescr
                   </h3>
                   <span
                     className={cn(
-                      'shrink-0 text-xs font-semibold',
-                      isCompleted && 'text-emerald-600',
-                      isProcessing && 'text-blue-600',
-                      isWaiting && 'text-slate-400',
+                      'shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold',
+                      isCompleted && 'bg-emerald-100 text-emerald-700',
+                      isProcessing && 'bg-blue-100 text-blue-700',
+                      isWaiting && 'bg-slate-100 text-slate-400',
                     )}
                   >
                     {isCompleted ? 'Completed' : isProcessing ? 'Processing...' : 'Waiting'}
@@ -156,29 +189,27 @@ export function AnalysisPage({ onComplete, agentSteps, isRunning, complaintDescr
                   <p className="mt-1.5 text-xs leading-relaxed text-slate-500">{step.output}</p>
                 )}
                 {isProcessing && (
-                  <p className="mt-1.5 text-xs text-slate-400">Analyzing complaint data...</p>
+                  <div className="mt-2 flex items-center gap-1.5">
+                    <div className="h-1.5 w-1.5 animate-bounce rounded-full bg-blue-400" style={{ animationDelay: '0ms' }} />
+                    <div className="h-1.5 w-1.5 animate-bounce rounded-full bg-blue-400" style={{ animationDelay: '150ms' }} />
+                    <div className="h-1.5 w-1.5 animate-bounce rounded-full bg-blue-400" style={{ animationDelay: '300ms' }} />
+                    <span className="ml-1 text-xs text-slate-400">Analyzing complaint data...</span>
+                  </div>
                 )}
               </div>
-
-              {/* Connector arrow */}
-              {i < steps.length - 1 && (
-                <div className="hidden items-center self-stretch sm:flex">
-                  <ArrowRight className="h-4 w-4 text-slate-300" />
-                </div>
-              )}
             </div>
           );
         })}
       </div>
 
       {!isRunning && completedCount === steps.length && (
-        <div className="mt-8 text-center">
+        <div className="mt-8 text-center animate-fade-in">
           <button
             onClick={onComplete}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-xl hover:brightness-105"
+            className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 px-7 py-3.5 text-base font-semibold text-white shadow-xl shadow-blue-500/30 transition-all hover:shadow-2xl hover:brightness-110"
           >
             View Results
-            <ArrowRight className="h-5 w-5" />
+            <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
           </button>
         </div>
       )}

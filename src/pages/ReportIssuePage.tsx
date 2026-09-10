@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Send, User, MapPin, Tag, MessageSquare, AlertCircle } from 'lucide-react';
+import { Send, User, MapPin, Tag, MessageSquare, AlertCircle, Wifi, Zap, Wrench, Droplets, FlaskConical, Sparkles, Lightbulb } from 'lucide-react';
 import type { NewComplaint } from '@/lib/supabase';
 
 interface ReportIssuePageProps {
@@ -9,12 +9,12 @@ interface ReportIssuePageProps {
 }
 
 const CATEGORIES = [
-  'IT / Wi-Fi',
-  'Electrical',
-  'Maintenance',
-  'Water / Sanitation',
-  'Laboratory',
-  'Cleanliness',
+  { label: 'IT / Wi-Fi', icon: Wifi, gradient: 'from-sky-500 to-cyan-600', active: 'border-sky-500 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-md shadow-sky-500/10' },
+  { label: 'Electrical', icon: Zap, gradient: 'from-amber-500 to-orange-600', active: 'border-amber-500 bg-gradient-to-br from-amber-50 to-orange-50 text-amber-700 shadow-md shadow-amber-500/10' },
+  { label: 'Maintenance', icon: Wrench, gradient: 'from-slate-500 to-slate-700', active: 'border-slate-500 bg-gradient-to-br from-slate-50 to-gray-50 text-slate-700 shadow-md shadow-slate-500/10' },
+  { label: 'Water / Sanitation', icon: Droplets, gradient: 'from-blue-500 to-indigo-600', active: 'border-blue-500 bg-gradient-to-br from-blue-50 to-indigo-50 text-blue-700 shadow-md shadow-blue-500/10' },
+  { label: 'Laboratory', icon: FlaskConical, gradient: 'from-violet-500 to-purple-600', active: 'border-violet-500 bg-gradient-to-br from-violet-50 to-purple-50 text-violet-700 shadow-md shadow-violet-500/10' },
+  { label: 'Cleanliness', icon: Sparkles, gradient: 'from-emerald-500 to-green-600', active: 'border-emerald-500 bg-gradient-to-br from-emerald-50 to-green-50 text-emerald-700 shadow-md shadow-emerald-500/10' },
 ];
 
 const BLOCKS = ['Block A', 'Block B', 'Block C', 'Block D', 'Library', 'Auditorium', 'Sports Complex'];
@@ -24,6 +24,13 @@ const EXAMPLES = [
   'The ceiling fan in room 204 is not working and the lights are flickering.',
   'There is a water leakage from the pipe in the Block B washroom. Water is overflowing.',
   'The microscope in the biology lab is broken and cannot be used for the practical exam.',
+];
+
+const SECTION_STYLES = [
+  { icon: User, gradient: 'from-cyan-500 to-blue-600', text: 'text-cyan-600', bg: 'from-cyan-50/50 to-transparent' },
+  { icon: MapPin, gradient: 'from-blue-500 to-indigo-600', text: 'text-blue-600', bg: 'from-blue-50/50 to-transparent' },
+  { icon: Tag, gradient: 'from-violet-500 to-purple-600', text: 'text-violet-600', bg: 'from-violet-50/50 to-transparent' },
+  { icon: MessageSquare, gradient: 'from-rose-500 to-pink-600', text: 'text-rose-600', bg: 'from-rose-50/50 to-transparent' },
 ];
 
 export function ReportIssuePage({ onSubmit, isSubmitting, error }: ReportIssuePageProps) {
@@ -55,7 +62,12 @@ export function ReportIssuePage({ onSubmit, isSubmitting, error }: ReportIssuePa
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
+      {/* Header */}
       <div className="mb-8">
+        <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-100 to-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-700">
+          <Lightbulb className="h-3.5 w-3.5" />
+          New Complaint
+        </div>
         <h1 className="text-2xl font-bold text-slate-900 sm:text-3xl">Report an Issue</h1>
         <p className="mt-2 text-slate-600">
           Fill out the form below. Once submitted, our AI agents will automatically analyze, prioritize, and route your complaint.
@@ -64,11 +76,7 @@ export function ReportIssuePage({ onSubmit, isSubmitting, error }: ReportIssuePa
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Student Info */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2">
-            <User className="h-5 w-5 text-cyan-600" />
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">Student Information</h2>
-          </div>
+        <FormSection icon={User} gradient="from-cyan-500 to-blue-600" title="Student Information">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field
               label="Student Name"
@@ -86,14 +94,10 @@ export function ReportIssuePage({ onSubmit, isSubmitting, error }: ReportIssuePa
               placeholder="e.g. CS21-042"
             />
           </div>
-        </div>
+        </FormSection>
 
         {/* Location */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2">
-            <MapPin className="h-5 w-5 text-cyan-600" />
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">Location</h2>
-          </div>
+        <FormSection icon={MapPin} gradient="from-blue-500 to-indigo-600" title="Location">
           <div className="grid gap-4 sm:grid-cols-2">
             <SelectField
               label="Block / Building"
@@ -112,41 +116,40 @@ export function ReportIssuePage({ onSubmit, isSubmitting, error }: ReportIssuePa
               placeholder="e.g. Room 204, Computer Lab"
             />
           </div>
-        </div>
+        </FormSection>
 
         {/* Category */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2">
-            <Tag className="h-5 w-5 text-cyan-600" />
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">Category</h2>
-          </div>
+        <FormSection icon={Tag} gradient="from-violet-500 to-purple-600" title="Category">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                type="button"
-                onClick={() => update('category', cat)}
-                className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-all ${
-                  form.category === cat
-                    ? 'border-cyan-500 bg-cyan-50 text-cyan-700 shadow-sm'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+            {CATEGORIES.map((cat) => {
+              const Icon = cat.icon;
+              const isActive = form.category === cat.label;
+              return (
+                <button
+                  key={cat.label}
+                  type="button"
+                  onClick={() => update('category', cat.label)}
+                  className={`group flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-sm font-medium transition-all ${
+                    isActive
+                      ? cat.active
+                      : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 hover:shadow-sm'
+                  }`}
+                >
+                  <div className={`flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br ${cat.gradient} text-white shadow-sm transition-transform ${isActive ? 'scale-110' : 'opacity-60 group-hover:opacity-100'}`}>
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <span className="text-left leading-tight">{cat.label}</span>
+                </button>
+              );
+            })}
           </div>
           {touched.category && !form.category && (
             <p className="mt-2 text-xs font-medium text-red-600">Please select a category</p>
           )}
-        </div>
+        </FormSection>
 
         {/* Description */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-center gap-2">
-            <MessageSquare className="h-5 w-5 text-cyan-600" />
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">Complaint Description</h2>
-          </div>
+        <FormSection icon={MessageSquare} gradient="from-rose-500 to-pink-600" title="Complaint Description">
           <textarea
             value={form.description}
             onChange={(e) => update('description', e.target.value)}
@@ -154,13 +157,12 @@ export function ReportIssuePage({ onSubmit, isSubmitting, error }: ReportIssuePa
             rows={4}
             required
             placeholder="Describe the issue in detail..."
-            className="w-full resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+            className="w-full resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-rose-500 focus:outline-none focus:ring-2 focus:ring-rose-500/20"
           />
           {touched.description && !form.description.trim() && (
             <p className="mt-2 text-xs font-medium text-red-600">Description is required</p>
           )}
 
-          {/* Example complaints */}
           <div className="mt-4">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Quick examples:</p>
             <div className="flex flex-wrap gap-2">
@@ -169,18 +171,18 @@ export function ReportIssuePage({ onSubmit, isSubmitting, error }: ReportIssuePa
                   key={i}
                   type="button"
                   onClick={() => useExample(ex)}
-                  className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-600 transition-colors hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700"
+                  className="rounded-lg border border-slate-200 bg-gradient-to-br from-slate-50 to-slate-100/50 px-3 py-1.5 text-xs text-slate-600 transition-all hover:border-cyan-300 hover:from-cyan-50 hover:to-blue-50 hover:text-cyan-700 hover:shadow-sm"
                 >
                   {ex.length > 40 ? ex.slice(0, 40) + '...' : ex}
                 </button>
               ))}
             </div>
           </div>
-        </div>
+        </FormSection>
 
         {/* Error */}
         {error && (
-          <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+          <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-gradient-to-r from-red-50 to-rose-50 px-4 py-3 text-sm font-medium text-red-700 shadow-sm">
             <AlertCircle className="h-4 w-4 shrink-0" />
             {error}
           </div>
@@ -191,13 +193,40 @@ export function ReportIssuePage({ onSubmit, isSubmitting, error }: ReportIssuePa
           <button
             type="submit"
             disabled={!valid || isSubmitting}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-cyan-500/25 transition-all hover:shadow-xl hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
+            className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 px-7 py-3.5 text-base font-semibold text-white shadow-xl shadow-blue-500/30 transition-all hover:shadow-2xl hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none"
           >
-            {isSubmitting ? 'Analyzing...' : 'Analyze Complaint'}
-            <Send className="h-4 w-4" />
+            {isSubmitting ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                Analyzing...
+              </>
+            ) : (
+              <>
+                Analyze Complaint
+                <Send className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+              </>
+            )}
           </button>
         </div>
       </form>
+    </div>
+  );
+}
+
+// ─── Form Section wrapper ────────────────────────────────
+function FormSection({ icon: Icon, gradient, title, children }: { icon: typeof User; gradient: string; title: string; children: React.ReactNode }) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm transition-shadow hover:shadow-md">
+      <div className={`h-1 bg-gradient-to-r ${gradient}`} />
+      <div className="p-6">
+        <div className="mb-4 flex items-center gap-2.5">
+          <div className={`flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br ${gradient} text-white shadow-sm`}>
+            <Icon className="h-4.5 w-4.5" />
+          </div>
+          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">{title}</h2>
+        </div>
+        {children}
+      </div>
     </div>
   );
 }
@@ -231,7 +260,7 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
         placeholder={placeholder}
-        className={`w-full rounded-xl border bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:outline-none focus:ring-2 ${
+        className={`w-full rounded-xl border bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-all focus:outline-none focus:ring-2 ${
           error
             ? 'border-red-300 focus:border-red-500 focus:ring-red-500/20'
             : 'border-slate-300 focus:border-cyan-500 focus:ring-cyan-500/20'
@@ -261,7 +290,7 @@ function SelectField({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 transition-colors focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+        className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 transition-all focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
       >
         <option value="">{placeholder || 'Select...'}</option>
         {options.map((opt) => (

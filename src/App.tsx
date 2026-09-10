@@ -142,7 +142,7 @@ export default function App() {
     : null;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-slate-50 to-white">
       <Navbar current={page} onNavigate={navigate} />
 
       <main>
@@ -205,9 +205,13 @@ export default function App() {
         )}
       </main>
 
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-6 text-center sm:px-6 lg:px-8">
-          <p className="text-sm text-slate-500">
+      <footer className="relative overflow-hidden border-t border-slate-200 bg-gradient-to-r from-slate-50 via-white to-slate-50">
+        <div className="absolute inset-0 -z-0 opacity-50">
+          <div className="absolute left-1/4 bottom-0 h-20 w-40 rounded-full bg-cyan-200/20 blur-2xl" />
+          <div className="absolute right-1/4 bottom-0 h-20 w-40 rounded-full bg-blue-200/20 blur-2xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 py-6 text-center sm:px-6 lg:px-8">
+          <p className="bg-gradient-to-r from-slate-500 to-slate-700 bg-clip-text text-sm font-medium text-transparent">
             CampusCare AI — Report. Analyze. Resolve. Built for the All Things Agentic Hackathon.
           </p>
         </div>
