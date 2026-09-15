@@ -1,8 +1,8 @@
 # CampusCare AI
 
 > Report. Analyze. Resolve.
-
-#https://campuscare-ai-ljfh.bolt.host
+ 
+# https://campuscare-ai-ljfh.bolt.host
 
 ## Problem Statement
 In colleges, students frequently face campus issues such as:
