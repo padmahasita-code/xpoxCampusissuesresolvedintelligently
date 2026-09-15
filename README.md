@@ -2,12 +2,9 @@
 
 > Report. Analyze. Resolve.
 
-[![Open in Bolt](https://bolt.new/static/open-in-bolt.svg)](https://bolt.new/~/sb1-kfrfrlra)
-
----
+#https://campuscare-ai-ljfh.bolt.host
 
 ## Problem Statement
-
 In colleges, students frequently face campus issues such as:
 
 - Broken fans, lights, and electrical fixtures
